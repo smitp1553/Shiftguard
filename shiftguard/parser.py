@@ -1,4 +1,4 @@
-import json
+﻿import json
 
 
 def load_plan(path):
@@ -28,3 +28,11 @@ def get_resources(module):
 def get_all_resources(plan):
     root = plan["planned_values"]["root_module"]
     return get_resources(root)
+
+
+def get_config_resources(plan):
+    # the configuration section is where references live (like which policy an attachment points to)
+    # returns {address: resource}
+    # TODO: modules are not followed here, so references inside child modules are not resolved
+    root = plan.get("configuration", {}).get("root_module", {})
+    return {r["address"]: r for r in root.get("resources", [])}

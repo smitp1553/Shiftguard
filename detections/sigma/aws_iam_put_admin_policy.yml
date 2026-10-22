@@ -1,0 +1,34 @@
+﻿title: AWS IAM Inline Admin Policy Written
+id: 08b98bd5-ec6a-4519-a1d3-9f347bb6abd1
+status: experimental
+description: >
+    An inline policy that allows Action * on Resource * was written to a user, role or group.
+    This is the end step of the PutUserPolicy and PutRolePolicy escalation techniques.
+    The policy document is a JSON string inside the event, so the rule uses regular expressions
+    that allow whitespace and a one-item list around the star.
+references:
+    - https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutUserPolicy.html
+author: SMIT
+date: 2026-10-22
+tags:
+    - attack.privilege-escalation
+    - attack.t1098.003
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    selection:
+        eventSource: iam.amazonaws.com
+        eventName:
+            - PutUserPolicy
+            - PutRolePolicy
+            - PutGroupPolicy
+    admin_action:
+        requestParameters.policyDocument|re: '"Action"\s*:\s*(\[\s*)?"\*"'
+    admin_resource:
+        requestParameters.policyDocument|re: '"Resource"\s*:\s*(\[\s*)?"\*"'
+    condition: selection and admin_action and admin_resource
+falsepositives:
+    - Administrators who write a full-access inline policy on purpose.
+    - TODO: iam:* on Resource * and policies with the star inside a longer list are not matched.
+level: high

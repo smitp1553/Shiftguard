@@ -1,0 +1,29 @@
+﻿title: AWS CloudTrail Logging Stopped Deleted Or Changed
+id: 3681e7a9-c199-419b-9440-97fbb6feee89
+status: experimental
+description: >
+    A CloudTrail trail was stopped, deleted or updated. Attackers do this to hide what they
+    do next. TODO: PutEventSelectors and PutInsightSelectors can also blind a trail but are noisy.
+references:
+    - https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_StopLogging.html
+author: SMIT
+date: 2026-10-22
+tags:
+    - attack.defense-impairment
+    - attack.t1685.002
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    selection:
+        eventSource: cloudtrail.amazonaws.com
+        eventName:
+            - StopLogging
+            - DeleteTrail
+            - UpdateTrail
+    condition: selection
+falsepositives:
+    - Planned trail changes by the security or platform team.
+    - UpdateTrail is used by some setup tools when they configure a trail.
+level: high
+

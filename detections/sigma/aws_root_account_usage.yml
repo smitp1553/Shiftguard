@@ -1,0 +1,25 @@
+﻿title: AWS Root Account Activity
+id: 493d007c-64b3-4979-9472-f631bd011bae
+status: experimental
+description: >
+    The root user of the AWS account was used. Root should only be used for a few rare tasks.
+    Actions that AWS services perform on the account's behalf are left out.
+references:
+    - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html
+author: SMIT
+date: 2026-10-22
+tags:
+    - attack.privilege-escalation
+    - attack.t1078.004
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    selection:
+        userIdentity.type: Root
+    filter_service_events:
+        eventType: AwsServiceEvent
+    condition: selection and not filter_service_events
+falsepositives:
+    - Rare tasks that only root can do, such as closing the account or changing the support plan.
+level: high

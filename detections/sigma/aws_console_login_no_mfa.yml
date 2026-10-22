@@ -1,0 +1,29 @@
+﻿title: AWS Console Login By IAM User Without MFA
+id: 02c69350-eff1-45cc-9d35-bca906e79783
+status: experimental
+description: >
+    An IAM user signed in to the AWS console successfully without multi-factor authentication.
+    Only IAM users are checked. Federated and single sign-on logins record MFAUsed as No even
+    when the identity provider enforced MFA, so they are left out on purpose.
+references:
+    - https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-aws-console-sign-in-events.html
+author: SMIT
+date: 2026-10-22
+tags:
+    - attack.initial-access
+    - attack.t1078.004
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    selection:
+        eventSource: signin.amazonaws.com
+        eventName: ConsoleLogin
+        userIdentity.type: IAMUser
+        responseElements.ConsoleLogin: Success
+        additionalEventData.MFAUsed: 'No'
+    condition: selection
+falsepositives:
+    - IAM users that are allowed to sign in without MFA, such as break-glass accounts. Allow-list them.
+    - Federated users without MFA at the identity provider are not seen by this rule.
+level: medium

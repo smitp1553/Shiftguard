@@ -1,0 +1,31 @@
+﻿title: AWS IAM Access Key Created For A Different User
+id: 4eeced34-6b89-403e-b11c-23e076a811fe
+status: experimental
+description: >
+    An access key was created for an IAM user other than the caller.
+    An attacker with iam:CreateAccessKey on another user can create a key for a more
+    powerful user and then act as them. A call without a userName creates a key for the caller
+    and is not matched.
+references:
+    - https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccessKey.html
+author: SMIT
+date: 2026-10-22
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.t1098.001
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    selection:
+        eventSource: iam.amazonaws.com
+        eventName: CreateAccessKey
+        requestParameters.userName|exists: true
+    filter_self:
+        requestParameters.userName|fieldref: userIdentity.userName
+    condition: selection and not filter_self
+falsepositives:
+    - Administrators or onboarding automation that create keys for other users.
+    - A role that creates keys has no userIdentity.userName, so every such event matches. Allow-list your automation roles.
+level: high

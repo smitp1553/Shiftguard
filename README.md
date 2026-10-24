@@ -1,8 +1,23 @@
 # ShiftGuard
 
-ShiftGuard reads a Terraform plan (as JSON), builds a graph of who can become whom in AWS IAM, and reports every principal that can escalate to admin. Each step is linked to a Sigma detection rule for CloudTrail and an ATT&CK technique.
+![security](https://github.com/smitp1553/Shiftguard/actions/workflows/security.yml/badge.svg)
 
-It is a learning and portfolio project, written by a cybersecurity student. It is **not** a replacement for [PMapper](https://github.com/nccgroup/PMapper), [Checkov](https://www.checkov.io/) or a real cloud security review. See "Limits" before trusting any result.
+**Finds IAM privilege-escalation paths in Terraform plans, and shows how to catch each one in CloudTrail.**
+
+In simple words: you give ShiftGuard a Terraform plan for AWS. It shows which users or roles could quietly turn themselves into admin, step by step. For each step it points to a Sigma detection rule, so you can also spot the attack in your logs.
+
+- Works on the plan only. Nothing is applied and no AWS account is needed.
+- 13 escalation techniques and 10 Sigma rules, mapped to MITRE ATT&CK.
+- Fails a pull request when a change would create a path to admin.
+- The rules were tested on real events from a test AWS account.
+
+> This is a learning and portfolio project by a cybersecurity student. It is **not** a replacement for [PMapper](https://github.com/nccgroup/PMapper), [Checkov](https://www.checkov.io/) or a real cloud security review. Read "Limits" below before trusting a result.
+
+## Screenshots
+
+**Real CloudTrail events used to test the rules**
+
+![Real CloudTrail events used to test the rules](docs/img/cloudtrail-events.png)
 
 ## Why it exists
 

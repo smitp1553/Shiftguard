@@ -42,3 +42,7 @@ The rest of ShiftGuard works offline. This page records the one time it was chec
 - Not tested on real events: `aws_iam_login_profile_other_user` (blocked by the SCP), `aws_root_account_usage`, `aws_console_login_no_mfa`, `aws_cloudtrail_logging_changed` (no trail was created, to avoid cost; it was tested earlier on 3 events from the Splunk attack_data project).
 - PassRole was not tested because it needs EC2.
 - The Splunk and ES|QL conversions were checked for syntax only, never run on a real system.
+## Cleanup note
+
+terraform destroy removed the roles, policies and keys but stopped at the users, because the AWS guardrail denies iam:DeleteLoginProfile (which force_destroy calls first). The users had no console password, so they were deleted with aws iam delete-user instead. The credit balance was still 100 USD after the test (usage data can lag).
+

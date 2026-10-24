@@ -1,0 +1,483 @@
+{
+  "Records": [
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0001",
+        "arn": "arn:aws:iam::123456789012:user/smit-admin",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0001",
+        "userName": "smit-admin"
+      },
+      "eventTime": "2026-10-24T15:52:42Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "AttachUserPolicy",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "requestParameters": {
+        "userName": "dev-alice",
+        "policyArn": "arn:aws:iam::123456789012:policy/dev-alice-policy"
+      },
+      "responseElements": null,
+      "requestID": "6977e593-7eff-4afd-b528-94f9a532d32f",
+      "eventID": "0fc02925-7715-4633-ab77-c760e90c9093",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0001",
+        "arn": "arn:aws:iam::123456789012:user/smit-admin",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0001",
+        "userName": "smit-admin"
+      },
+      "eventTime": "2026-10-24T15:53:42Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "CreateAccessKey",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "requestParameters": {
+        "userName": "dev-alice"
+      },
+      "responseElements": {
+        "accessKey": {
+          "userName": "dev-alice",
+          "accessKeyId": "EXAMPLEKEYID0002",
+          "status": "Active",
+          "createDate": "2026-10-24T15:53:42Z"
+        }
+      },
+      "requestID": "bdef2c84-b210-48db-a8b1-f71960252b50",
+      "eventID": "077cc8a9-ab0e-46f5-aee2-d96c66c7818b",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0002",
+        "arn": "arn:aws:iam::123456789012:user/dev-alice",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0002",
+        "userName": "dev-alice"
+      },
+      "eventTime": "2026-10-24T15:56:21Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "CreatePolicyVersion",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "requestParameters": {
+        "policyArn": "arn:aws:iam::123456789012:policy/dev-alice-policy",
+        "policyDocument": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"iam:CreatePolicyVersion\",\"iam:SetDefaultPolicyVersion\",\"iam:ListPolicyVersions\"],\"Resource\":\"arn:aws:iam::123456789012:policy/dev-alice-policy\"},{\"Effect\":\"Allow\",\"Action\":[\"s3:ListAllMyBuckets\"],\"Resource\":\"*\"}]}",
+        "setAsDefault": true
+      },
+      "responseElements": {
+        "policyVersion": {
+          "versionId": "v2",
+          "isDefaultVersion": true,
+          "createDate": "2026-10-24T15:56:21Z"
+        }
+      },
+      "requestID": "5091895d-ecc5-44b9-ac36-5b858ff36630",
+      "eventID": "36ffbe0a-8999-447b-8251-d20b11605b64",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0002",
+        "arn": "arn:aws:iam::123456789012:user/dev-alice",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0002",
+        "userName": "dev-alice"
+      },
+      "eventTime": "2026-10-24T15:56:25Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "SetDefaultPolicyVersion",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "requestParameters": {
+        "policyArn": "arn:aws:iam::123456789012:policy/dev-alice-policy",
+        "versionId": "v1"
+      },
+      "responseElements": null,
+      "requestID": "eddef5fb-5b52-4d2f-a0b1-d30fbfe366e5",
+      "eventID": "247a266a-ea56-4054-942d-374c44c3c694",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0003",
+        "arn": "arn:aws:iam::123456789012:user/dev-bob",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0003",
+        "userName": "dev-bob"
+      },
+      "eventTime": "2026-10-24T15:56:28Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "AttachUserPolicy",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "requestParameters": {
+        "userName": "dev-bob",
+        "policyArn": "arn:aws:iam::aws:policy/ReadOnlyAccess"
+      },
+      "responseElements": null,
+      "requestID": "6c1a8631-85e4-4d44-ac9b-7bbd266c2bda",
+      "eventID": "16c02cfd-3e19-4305-88d3-e9cce3c1f258",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0003",
+        "arn": "arn:aws:iam::123456789012:user/dev-bob",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0003",
+        "userName": "dev-bob"
+      },
+      "eventTime": "2026-10-24T15:56:31Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "AttachUserPolicy",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "requestParameters": {
+        "userName": "dev-bob",
+        "policyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
+      },
+      "responseElements": null,
+      "requestID": "2745eff9-40be-4f7f-90f6-807f716a6d0f",
+      "eventID": "d19be113-68d6-453e-96ec-68c9499359b1",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0004",
+        "arn": "arn:aws:iam::123456789012:user/dev-pete",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0004",
+        "userName": "dev-pete"
+      },
+      "eventTime": "2026-10-24T15:56:34Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "PutUserPolicy",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "requestParameters": {
+        "userName": "dev-pete",
+        "policyName": "benign",
+        "policyDocument": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"s3:GetObject\"],\"Resource\":\"arn:aws:s3:::example-bucket/*\"}]}"
+      },
+      "responseElements": null,
+      "requestID": "9ef21c21-1365-4257-b274-5ba9ab1b4164",
+      "eventID": "36abf89a-2007-4f95-a9c8-a0718bc7860b",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0004",
+        "arn": "arn:aws:iam::123456789012:user/dev-pete",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0004",
+        "userName": "dev-pete"
+      },
+      "eventTime": "2026-10-24T15:56:38Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "PutUserPolicy",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "requestParameters": {
+        "userName": "dev-pete",
+        "policyName": "admin-inline",
+        "policyDocument": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"*\",\"Resource\":\"*\"}]}"
+      },
+      "responseElements": null,
+      "requestID": "d4350a9e-3f13-49e3-8f83-efca82d06876",
+      "eventID": "2f1e57ab-b376-49d8-b65f-a95a8fce4358",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0005",
+        "arn": "arn:aws:iam::123456789012:user/dev-dave",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0005",
+        "userName": "dev-dave"
+      },
+      "eventTime": "2026-10-24T15:56:41Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "CreateAccessKey",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "errorCode": "AccessDenied",
+      "errorMessage": "REDACTED",
+      "requestParameters": null,
+      "responseElements": null,
+      "requestID": "809a1358-e0aa-46a1-8803-71d31fcc2a10",
+      "eventID": "01bf9fc2-6884-4437-a9a2-648dca8869cb",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0005",
+        "arn": "arn:aws:iam::123456789012:user/dev-dave",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0005",
+        "userName": "dev-dave"
+      },
+      "eventTime": "2026-10-24T15:56:45Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "CreateAccessKey",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "requestParameters": {
+        "userName": "victim-user"
+      },
+      "responseElements": {
+        "accessKey": {
+          "userName": "victim-user",
+          "accessKeyId": "EXAMPLEKEYID0006",
+          "status": "Active",
+          "createDate": "2026-10-24T15:56:45Z"
+        }
+      },
+      "requestID": "296534a7-4211-496d-9f56-7376c9deca36",
+      "eventID": "6aeafded-6720-4a06-8ae7-b6233fe2ca73",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0006",
+        "arn": "arn:aws:iam::123456789012:user/dev-lara",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0007",
+        "userName": "dev-lara"
+      },
+      "eventTime": "2026-10-24T15:56:48Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "CreateLoginProfile",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "errorCode": "AccessDenied",
+      "errorMessage": "REDACTED",
+      "requestParameters": null,
+      "responseElements": null,
+      "requestID": "ccb611ee-adb9-4e89-ab9a-3ed67a36ff91",
+      "eventID": "7e3447c3-ae27-4c99-9318-980555562b63",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "EXAMPLEPRINCIPAL0007",
+        "arn": "arn:aws:iam::123456789012:user/dev-quinn",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0008",
+        "userName": "dev-quinn"
+      },
+      "eventTime": "2026-10-24T15:56:50Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "UpdateAssumeRolePolicy",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "requestParameters": {
+        "roleName": "target-role",
+        "policyDocument": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::123456789012:user/dev-quinn\"},\"Action\":\"sts:AssumeRole\"}]}"
+      },
+      "responseElements": null,
+      "requestID": "0c58c680-db02-41cb-aa9f-b16eed1b56a2",
+      "eventID": "d63cf614-125e-4a59-a3d4-ce949d6c0afe",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    },
+    {
+      "eventVersion": "1.11",
+      "userIdentity": {
+        "type": "AssumedRole",
+        "principalId": "EXAMPLEPRINCIPAL0008:chain",
+        "arn": "arn:aws:sts::123456789012:assumed-role/key-manager-role/chain",
+        "accountId": "123456789012",
+        "accessKeyId": "EXAMPLEKEYID0009",
+        "sessionContext": {
+          "sessionIssuer": {
+            "type": "Role",
+            "principalId": "EXAMPLEPRINCIPAL0008",
+            "arn": "arn:aws:iam::123456789012:role/key-manager-role",
+            "accountId": "123456789012",
+            "userName": "key-manager-role"
+          },
+          "attributes": {
+            "creationDate": "2026-10-24T15:56:53Z",
+            "mfaAuthenticated": "false"
+          }
+        }
+      },
+      "eventTime": "2026-10-24T15:56:57Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "CreateAccessKey",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.25",
+      "userAgent": "aws-cli/2.0.0 (sanitized)",
+      "requestParameters": {
+        "userName": "victim-user"
+      },
+      "responseElements": {
+        "accessKey": {
+          "userName": "victim-user",
+          "accessKeyId": "EXAMPLEKEYID0010",
+          "status": "Active",
+          "createDate": "2026-10-24T15:56:57Z"
+        }
+      },
+      "requestID": "ee57d9a6-5dd0-4530-bac6-ac84c14f7655",
+      "eventID": "194d4e61-a5f2-4174-aac8-38c2d2f813e9",
+      "readOnly": false,
+      "eventType": "AwsApiCall",
+      "managementEvent": true,
+      "recipientAccountId": "123456789012",
+      "eventCategory": "Management",
+      "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "iam.amazonaws.com"
+      }
+    }
+  ]
+}

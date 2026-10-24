@@ -100,15 +100,21 @@ What ShiftGuard does not do. Read this before relying on it.
 - **AWS only, Terraform plans only.** No CloudFormation, no live account scanning.
 - **Plan values can be unknown.** ARNs computed at apply time are resolved from references where possible.
 
+## Verified on real events
+
+The IAM Sigma rules were run against real CloudTrail events from a test AWS account (Free plan, IAM only). Six rules and the two-step chain fired on the real attack events, and the benign calls stayed quiet. Details, findings and limits are in [docs/live-validation.md](docs/live-validation.md). A cleaned copy of the events is in `tests/fixtures/cloudtrail_real/`.
+
 ## Not verified
 
 Things I believe but have not proven. Treat them as open questions.
 
-- The CloudTrail field names for the IAM rules (`requestParameters.policyArn`, `setAsDefault`, `userName`, `policyDocument`) come from AWS documentation, not from real IAM events. Only the CloudTrail-logging rule was tested on real sample data (3 events from the Splunk attack_data project).
-- I believe `iam:PassRole` is not logged as its own CloudTrail event, which is why those two techniques have no rule. I have not confirmed this.
+- Three rules were not tested on real events: `aws_iam_login_profile_other_user` (an AWS guardrail blocked the call), `aws_root_account_usage` and `aws_console_login_no_mfa` (no matching sign-in event). The trail rule was only tested on 3 sample events from the Splunk attack_data project.
+- The key rule compares `requestParameters.userName` with the caller's `userName`. An assumed role has no `userName`. It fired in my own matcher, but I think Splunk and ES|QL may drop that event because of how they handle missing values. Not tested.
+- Denied calls are logged without request parameters, so these rules do not fire on failed attempts.
+- I believe `iam:PassRole` is not logged as its own CloudTrail event, which is why those two techniques have no rule. Not confirmed (it needs EC2).
 - The `AwsServiceEvent` filter on the root-usage rule follows the SigmaHQ convention.
 - The `attack: "20"` version in the Navigator layer has not been tested against the hosted Navigator.
-- It has not been run against any real AWS account. The labs are synthetic.
+- The events come from one account and the AWS CLI only.
 
 ## Safety
 

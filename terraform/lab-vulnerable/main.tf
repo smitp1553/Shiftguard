@@ -153,3 +153,21 @@ resource "aws_iam_user_policy" "dev_frank_inline" {
     }]
   })
 }
+
+# Path 5b: dev-erin is allowed to assume the open admin role
+resource "aws_iam_user" "dev_erin" {
+  name = "dev-erin"
+}
+
+resource "aws_iam_user_policy" "dev_erin_inline" {
+  name = "dev-erin-inline"
+  user = aws_iam_user.dev_erin.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["sts:AssumeRole"]
+      Resource = "arn:aws:iam::123456789012:role/open-admin-role"
+    }]
+  })
+}

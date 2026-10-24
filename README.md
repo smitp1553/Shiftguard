@@ -1,0 +1,119 @@
+# ShiftGuard
+
+ShiftGuard reads a Terraform plan (as JSON), builds a graph of who can become whom in AWS IAM, and reports every principal that can escalate to admin. Each step is linked to a Sigma detection rule for CloudTrail and an ATT&CK technique.
+
+It is a learning and portfolio project, written by a cybersecurity student. It is **not** a replacement for [PMapper](https://github.com/nccgroup/PMapper), [Checkov](https://www.checkov.io/) or a real cloud security review. See "Limits" before trusting any result.
+
+## Why it exists
+
+Scanners like Checkov look at one resource at a time. Real privilege escalation is often a chain: user A can assume role B, and role B can create keys for admin user C. Each policy looks small, the chain is not. ShiftGuard follows the chain and, for every step, tells you how to detect it in CloudTrail.
+
+It works on the **plan**, before anything is applied, so a pull request can fail the build when it introduces a path to admin.
+
+## Quick demo
+
+```
+python -m shiftguard.cli terraform/lab-vulnerable/plan.json
+```
+
+
+Options:
+
+| Option | What it does |
+|---|---|
+| `--json out.json` | write the findings as JSON |
+| `--graph out.md` | write the full IAM graph as a Mermaid diagram |
+| `--paths out.md` | write only the escalation paths as a Mermaid diagram |
+| `--navigator layer.json` | write an ATT&CK Navigator layer showing detection coverage |
+
+To make a plan from your own Terraform (offline, nothing is applied):
+
+
+Do not commit plans from real accounts. Plan JSON can contain sensitive values.
+
+## What it finds
+
+13 escalation techniques. 9 have a Sigma rule, 4 do not (and say so in the output).
+
+| Technique | ATT&CK | Sigma rule |
+|---|---|---|
+| iam:CreatePolicyVersion | T1098.003 | yes |
+| iam:SetDefaultPolicyVersion | T1098.003 | yes |
+| iam:AttachUserPolicy, iam:AttachRolePolicy | T1098.003 | yes |
+| iam:PutUserPolicy, iam:PutRolePolicy | T1098.003 | yes |
+| iam:UpdateAssumeRolePolicy | T1098.003 | yes |
+| iam:CreateAccessKey (for another user) | T1098.001 | yes |
+| iam:CreateLoginProfile (for another user) | T1098.001 | yes |
+| iam:AddUserToGroup | T1098.003 | no (TODO) |
+| sts:AssumeRole into a stronger role | T1548.005 | no (too noisy alone) |
+| iam:PassRole + ec2:RunInstances | T1548.005 | no (see limits) |
+| iam:PassRole + lambda:CreateFunction | T1548.005 | no (see limits) |
+
+It also ships 3 general rules: CloudTrail logging stopped or changed (T1685.002), console login without MFA (T1078.004) and root account usage (T1078.004). In total there are 10 Sigma rules in `detections/sigma/`.
+
+The ATT&CK IDs follow v20. Note that T1562.008 was revoked and replaced by T1685.002, and the Defense Evasion tactic was split into Stealth and Defense Impairment. Older Sigma rules online still use the old tags.
+
+## Detections
+
+Each rule has malicious and benign CloudTrail test events in `tests/fixtures/cloudtrail/`. The tests check that the malicious events fire the rule and that no benign event fires any rule. The rules also convert with pySigma to Splunk and Elasticsearch ES|QL (all 10 each). Two rules use `fieldref` (comparing two fields) and cannot convert to Lucene, which is documented in [docs/detection-coverage.md](docs/detection-coverage.md).
+
+There is also a small matcher so the rules can run on a JSON file of CloudTrail events without any SIEM:
+
+
+## How it compares to Checkov
+
+Measured by `python -m benchmark.compare`, full output in [docs/benchmark.md](docs/benchmark.md). Checkov 3.3.30, default checks only.
+
+| Lab | ShiftGuard | Checkov escalation checks |
+|---|---|---|
+| lab-vulnerable (5 single-step paths) | 5 of 9 principals reach admin | flags all 5 |
+| lab-safe (same people, fixed) | 0 | 0 escalation failures, 18 hygiene failures |
+| lab-chain (2-step chain) | 2 of 3 reach admin | 0, both policies pass on their own |
+
+What this does and does not show:
+
+- Checkov's `CKV_AWS_286` and `CKV_AWS_289` catch single risky policies well, and they stayed quiet on the fixed versions.
+- Checkov looks at one resource at a time, so it did not see the two-step chain. ShiftGuard did.
+- I built the chain lab myself to test that exact gap. It shows the gap exists, not that chains are common in real accounts.
+- The match between a Checkov finding and a principal is done by resource name, which is a rough heuristic.
+- Checkov covers hundreds of other things (encryption, logging, networking). ShiftGuard only does IAM escalation. Checkov also supports custom checks that might close this gap. I did not test that.
+
+## CI
+
+`.github/workflows/security.yml` runs on every push and pull request: tests on Python 3.11 and 3.14, `sigma check`, ShiftGuard on both labs (the safe plan must pass, the vulnerable plan must fail, otherwise the analyzer is broken), Checkov in soft-fail mode for comparison, and Gitleaks on the full history. `demo-vulnerable.yml` is a manual workflow that fails on purpose to show what a blocked pull request looks like.
+
+## Project layout
+
+
+Run the tests with `python -m pytest`. The optional pySigma tests need `pip install -r requirements-sigma.txt`.
+
+## Limits
+
+What ShiftGuard does not do. Read this before relying on it.
+
+- **No explicit Deny, Conditions, permission boundaries, SCPs or session policies.** A Deny in a real account could block a path ShiftGuard reports (false positive). A missing condition check can also hide that a permission is safer than it looks.
+- **No resource-based policies and no cross-account trust.** Cross-account trust is skipped.
+- **Only the 13 techniques above.** AWS has many more escalation paths. A clean result does not mean an account is safe.
+- **One shortest path per principal.** Other paths to admin may exist.
+- **ec2:RunInstances is checked only against `Resource: *`.** A narrower resource is not analyzed.
+- **SetDefaultPolicyVersion cannot see old policy versions** because a plan only contains the current one.
+- **AWS only, Terraform plans only.** No CloudFormation, no live account scanning.
+- **Plan values can be unknown.** ARNs computed at apply time are resolved from references where possible.
+
+## Not verified
+
+Things I believe but have not proven. Treat them as open questions.
+
+- The CloudTrail field names for the IAM rules (`requestParameters.policyArn`, `setAsDefault`, `userName`, `policyDocument`) come from AWS documentation, not from real IAM events. Only the CloudTrail-logging rule was tested on real sample data (3 events from the Splunk attack_data project).
+- I believe `iam:PassRole` is not logged as its own CloudTrail event, which is why those two techniques have no rule. I have not confirmed this.
+- The `AwsServiceEvent` filter on the root-usage rule follows the SigmaHQ convention.
+- The `attack: "20"` version in the Navigator layer has not been tested against the hosted Navigator.
+- It has not been run against any real AWS account. The labs are synthetic.
+
+## Safety
+
+Terraform is only planned, never applied, and the labs use fake credentials with provider validation skipped. No AWS account is needed. Only use ShiftGuard on accounts you own or are authorized to test, and never commit real keys or real plans. Gitleaks runs on every push.
+
+## License
+
+TODO: choose a license before sharing widely.

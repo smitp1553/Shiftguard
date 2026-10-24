@@ -33,6 +33,12 @@ def findings_text(findings):
         for i, s in enumerate(f["steps"], 1):
             lines.append(f"  {i}. {s['detail']}  [{s['technique']}, {s['attack']}]")
             lines.append(f"     becomes: {s['to']}")
+            if "rules" in s:
+                if s["rules"]:
+                    for r in s["rules"]:
+                        lines.append(f"     detect with: {r['title']} ({r['id']})")
+                else:
+                    lines.append("     detect with: no sigma rule yet")
             if s["also"]:
                 lines.append(f"     same step also possible with: {', '.join(s['also'])}")
         lines.append(f"  Fix: {f['steps'][0]['fix']}")

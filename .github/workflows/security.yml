@@ -1,0 +1,82 @@
+name: security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# least privilege: the jobs only need to read the repo
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -r requirements.txt -r requirements-sigma.txt
+      - run: python -m pytest -q
+      - name: validate sigma rules
+        run: sigma check --fail-on-issues detections/sigma
+
+  shiftguard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - run: pip install -r requirements.txt
+
+      # the safe plan must pass (exit code 0)
+      - name: analyze lab-safe (must pass)
+        run: python -m shiftguard.cli terraform/lab-safe/plan.json --json safe-findings.json
+
+      # the vulnerable plan must fail (exit code 1), if it passes the analyzer is broken
+      - name: analyze lab-vulnerable (must find paths)
+        run: |
+          set +e
+          python -m shiftguard.cli terraform/lab-vulnerable/plan.json --json vulnerable-findings.json --navigator navigator-layer.json
+          code=$?
+          echo "exit code: $code"
+          test "$code" -eq 1
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: shiftguard-output
+          path: |
+            safe-findings.json
+            vulnerable-findings.json
+            navigator-layer.json
+
+  # for comparison with other tools, soft-fail so it never blocks the build
+  checkov:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install checkov
+      - name: checkov on the terraform files
+        run: checkov -d terraform --framework terraform --soft-fail --compact --quiet
+      - name: checkov on the plan json
+        run: |
+          checkov -f terraform/lab-vulnerable/plan.json --framework terraform_plan --soft-fail --compact --quiet
+          checkov -f terraform/lab-safe/plan.json --framework terraform_plan --soft-fail --compact --quiet
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0   # gitleaks also scans the history
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

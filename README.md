@@ -104,7 +104,7 @@ Run the tests with `python -m pytest`. The optional pySigma tests need `pip inst
 
 ## Limits
 
-What ShiftGuard does not do. Read this before relying on it.
+What ShiftGuard does not do. 
 
 - **No explicit Deny, Conditions, permission boundaries, SCPs or session policies.** A Deny in a real account could block a path ShiftGuard reports (false positive). A missing condition check can also hide that a permission is safer than it looks.
 - **No resource-based policies and no cross-account trust.** Cross-account trust is skipped.

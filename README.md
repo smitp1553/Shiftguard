@@ -9,7 +9,7 @@ In simple words: you give ShiftGuard a Terraform plan for AWS. It shows which us
 - Works on the plan only. Nothing is applied and no AWS account is needed.
 - 13 escalation techniques and 10 Sigma rules, mapped to MITRE ATT&CK.
 - Fails a pull request when a change would create a path to admin.
-- The rules were tested on real events from a test AWS account.
+- Six of the IAM rules were tested on real events from a test AWS account.
 
 > This is a learning and portfolio project by a cybersecurity student. It is **not** a replacement for [PMapper](https://github.com/nccgroup/PMapper), [Checkov](https://www.checkov.io/) or a real cloud security review. Read "Limits" below before trusting a result.
 
@@ -21,9 +21,9 @@ In simple words: you give ShiftGuard a Terraform plan for AWS. It shows which us
 
 ## Why it exists
 
-Scanners like Checkov look at one resource at a time. Real privilege escalation is often a chain: user A can assume role B, and role B can create keys for admin user C. Each policy looks small, the chain is not. ShiftGuard follows the chain and, for every step, tells you how to detect it in CloudTrail.
+Tools like Checkov are very good at checking each Terraform resource against many rules, and ShiftGuard does not try to replace them. ShiftGuard looks at one narrow thing: IAM permissions across resources. A user can assume a role, and that role can create keys for an admin. Each policy looks small on its own, but together they are a path to admin. ShiftGuard follows that chain and, for each step, points to a way to detect it in CloudTrail.
 
-It works on the **plan**, before anything is applied, so a pull request can fail the build when it introduces a path to admin.
+It works on the **plan**, before anything is applied, so a pull request can fail the build when it introduces a path to admin. Use it next to your normal scanners, not instead of them.
 
 ## Quick demo
 
@@ -75,9 +75,9 @@ Each rule has malicious and benign CloudTrail test events in `tests/fixtures/clo
 There is also a small matcher so the rules can run on a JSON file of CloudTrail events without any SIEM:
 
 
-## How it compares to Checkov
+## ShiftGuard and Checkov
 
-Measured by `python -m benchmark.compare`, full output in [docs/benchmark.md](docs/benchmark.md). Checkov 3.3.30, default checks only.
+The two tools do different jobs, and I ran both on the same labs. Measured by `python -m benchmark.compare`, full output in [docs/benchmark.md](docs/benchmark.md). Checkov 3.3.30, default checks only.
 
 | Lab | ShiftGuard | Checkov escalation checks |
 |---|---|---|
@@ -85,13 +85,13 @@ Measured by `python -m benchmark.compare`, full output in [docs/benchmark.md](do
 | lab-safe (same people, fixed) | 0 | 0 escalation failures, 18 hygiene failures |
 | lab-chain (2-step chain) | 2 of 3 reach admin | 0, both policies pass on their own |
 
-What this does and does not show:
+What I saw:
 
-- Checkov's `CKV_AWS_286` and `CKV_AWS_289` catch single risky policies well, and they stayed quiet on the fixed versions.
-- Checkov looks at one resource at a time, so it did not see the two-step chain. ShiftGuard did.
-- I built the chain lab myself to test that exact gap. It shows the gap exists, not that chains are common in real accounts.
-- The match between a Checkov finding and a principal is done by resource name, which is a rough heuristic.
-- Checkov covers hundreds of other things (encryption, logging, networking). ShiftGuard only does IAM escalation. Checkov also supports custom checks that might close this gap. I did not test that.
+- Checkov's `CKV_AWS_286` and `CKV_AWS_289` caught the single risky policies and stayed quiet on the fixed versions. That is strong.
+- Checkov checks one resource at a time. In the two-step chain, each policy passed its checks on its own. ShiftGuard's graph follows the chain across resources.
+- I built the chain lab myself to test that exact case, so it shows the difference can exist, not that it is common.
+- The link between a Checkov finding and a principal is made by resource name, which is a rough guess.
+- Checkov covers many other areas that ShiftGuard does not (encryption, logging, networking), and it supports custom checks that I did not try. Use both.
 
 ## CI
 
@@ -118,18 +118,6 @@ What ShiftGuard does not do. Read this before relying on it.
 ## Verified on real events
 
 The IAM Sigma rules were run against real CloudTrail events from a test AWS account (Free plan, IAM only). Six rules and the two-step chain fired on the real attack events, and the benign calls stayed quiet. Details, findings and limits are in [docs/live-validation.md](docs/live-validation.md). A cleaned copy of the events is in `tests/fixtures/cloudtrail_real/`.
-
-## Not verified
-
-Things I believe but have not proven. Treat them as open questions.
-
-- Three rules were not tested on real events: `aws_iam_login_profile_other_user` (an AWS guardrail blocked the call), `aws_root_account_usage` and `aws_console_login_no_mfa` (no matching sign-in event). The trail rule was only tested on 3 sample events from the Splunk attack_data project.
-- The key rule compares `requestParameters.userName` with the caller's `userName`. An assumed role has no `userName`. It fired in my own matcher, but I think Splunk and ES|QL may drop that event because of how they handle missing values. Not tested.
-- Denied calls are logged without request parameters, so these rules do not fire on failed attempts.
-- I believe `iam:PassRole` is not logged as its own CloudTrail event, which is why those two techniques have no rule. Not confirmed (it needs EC2).
-- The `AwsServiceEvent` filter on the root-usage rule follows the SigmaHQ convention.
-- The `attack: "20"` version in the Navigator layer has not been tested against the hosted Navigator.
-- The events come from one account and the AWS CLI only.
 
 ## Safety
 

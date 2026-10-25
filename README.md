@@ -123,6 +123,3 @@ The IAM Sigma rules were run against real CloudTrail events from a test AWS acco
 
 Terraform is only planned, never applied, and the labs use fake credentials with provider validation skipped. No AWS account is needed. Only use ShiftGuard on accounts you own or are authorized to test, and never commit real keys or real plans. Gitleaks runs on every push.
 
-## License
-
-TODO: choose a license before sharing widely.

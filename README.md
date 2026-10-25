@@ -102,18 +102,6 @@ What I saw:
 
 Run the tests with `python -m pytest`. The optional pySigma tests need `pip install -r requirements-sigma.txt`.
 
-## Limits
-
-What ShiftGuard does not do. 
-
-- **No explicit Deny, Conditions, permission boundaries, SCPs or session policies.** A Deny in a real account could block a path ShiftGuard reports (false positive). A missing condition check can also hide that a permission is safer than it looks.
-- **No resource-based policies and no cross-account trust.** Cross-account trust is skipped.
-- **Only the 13 techniques above.** AWS has many more escalation paths. A clean result does not mean an account is safe.
-- **One shortest path per principal.** Other paths to admin may exist.
-- **ec2:RunInstances is checked only against `Resource: *`.** A narrower resource is not analyzed.
-- **SetDefaultPolicyVersion cannot see old policy versions** because a plan only contains the current one.
-- **AWS only, Terraform plans only.** No CloudFormation, no live account scanning.
-- **Plan values can be unknown.** ARNs computed at apply time are resolved from references where possible.
 
 ## Verified on real events
 
